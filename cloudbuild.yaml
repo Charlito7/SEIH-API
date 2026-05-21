@@ -1,0 +1,34 @@
+steps:
+  # Étape 1 : Build de l'image Docker à partir du backend
+  - name: 'gcr.io/cloud-builders/docker'
+    args: [
+      'build',
+      '-t', 'gcr.io/kode-461516/kode-pos-backend',
+      '.'
+    ]
+
+  # Étape 2 : Push de l'image vers Container Registry (ou Artifact Registry)
+  - name: 'gcr.io/cloud-builders/docker'
+    args: [
+      'push',
+      'gcr.io/kode-461516/kode-pos-backend'
+    ]
+
+  # Étape 3 : Déploiement sur Cloud Run
+  - name: 'gcr.io/cloud-builders/gcloud'
+    args: [
+      'run', 'deploy', 'kode-pos-api',
+      '--image', 'gcr.io/kode-461516/kode-pos-backend',
+      '--region', 'us-east1',
+      '--platform', 'managed',
+      '--allow-unauthenticated',
+      '--port', '8080'
+    ]
+
+images:
+  - gcr.io/kode-461516/kode-pos-backend
+
+options:
+  # This ensures build logs are sent to Cloud Logging.
+  # It addresses the common error related to service accounts and log buckets.
+  logging: CLOUD_LOGGING_ONLY

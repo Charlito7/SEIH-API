@@ -27,6 +27,7 @@ namespace Infrastructure.Services.User
 
         public async Task<ServiceResult<bool>> DoesUserBelongToRoleAsync(string role, string email)
         {
+  
             if(!await _roleManager.IsRoleExists(role))
             {
                 return new ServiceResult<bool>(false);

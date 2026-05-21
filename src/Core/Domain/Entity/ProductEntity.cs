@@ -34,6 +34,8 @@ public class ProductEntity : AuditableEntity
     [Range(1, int.MaxValue, ErrorMessage = "Minimum Reorder Quantity must be a positive number")]
     public int MinimumReorderQuantity { get; set; }
 
+    public bool IsReturnAccepted { get; set; }
+    public int  ReturnTimeAccepted { get; set; }
     // Navigation property for the one-to-many relationship
 
     public CategoryEntity Category { get; set; }

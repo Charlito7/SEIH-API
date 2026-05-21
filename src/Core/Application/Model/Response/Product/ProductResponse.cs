@@ -21,4 +21,6 @@ public class ProductResponse
     public decimal Price { get; set; }
 
     public int MinimumReorderQuantity { get; set; }
+    public bool IsReturnAccepted { get; set; }
+    public int ReturnTimeAccepted { get; set; }
 }

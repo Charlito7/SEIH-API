@@ -1,0 +1,15 @@
+services:
+  webapi:
+    image: ${DOCKER_REGISTRY-}webapi
+    volumes:
+      - ./WebAPI/certs:/app/certs
+    build:
+      context: .
+      dockerfile: WebAPI/Dockerfile
+    container_name: seih-api
+    ports:
+      - "8080:8080"
+      - "5256:5256"
+    env_file:
+      - WebAPI/.env
+    restart: always

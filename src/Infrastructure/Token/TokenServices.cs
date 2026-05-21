@@ -1,35 +1,45 @@
 ﻿using Core.Application.Interface.Token;
 using Core.Domain.Entities;
+using Core.Domain.Entity.SEIH;
+using Core.Domain.Procedures.SEIH;
 using Infrastructure.Constants;
-using Infrastructure.DotEnv;
+using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
-using System;
-using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace Infrastructure.Token;
 
 public class TokenServices : ITokenServices
 {
-    public string BuildToken(string key, string issuer, string audience, UserEntity user)
+    private readonly ILogger<TokenServices> _logger;
+
+    public TokenServices(ILogger<TokenServices> logger)
     {
-        var claims = new[]
+        _logger = logger;
+    }
+
+    public string BuildToken(string key, string issuer, string audience, UserEntity user, IList<string> userRoles)
+    {
+        var claims = new List<Claim>
+{
+    new Claim(ClaimTypes.Name, user.UserName!),
+    new Claim(ClaimTypes.Email, user.Email!),
+    new Claim("IsNewPasswordRequired", user.IsNewPasswordRequired.ToString()!),
+    new Claim(ClaimTypes.NameIdentifier, Guid.NewGuid().ToString())
+};
+
+        foreach (var role in userRoles)
         {
-            new Claim(ClaimTypes.Name, user.UserName!),
-            new Claim(ClaimTypes.Email, user.Email!),
-            new Claim(ClaimTypes.Role, "User"),
-            new Claim(ClaimTypes.NameIdentifier, Guid.NewGuid().ToString())
-        };
+            claims.Add(new Claim(ClaimTypes.Role, role));
+        }
 
         var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key));
         var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256Signature);
         double tokenLifetime = InfrastructureConstants.TOKEN_EXPIRY_DURATION_DAYS;
-        double.TryParse(VariableBuilder.GetVariable(EnvFileConstants.ACCESS_TOKEN_LIFETIME_IN_DAYS), out tokenLifetime);
+        double.TryParse(Environment.GetEnvironmentVariable(EnvFileConstants.ACCESS_TOKEN_LIFETIME_IN_DAYS), out tokenLifetime);
         var tokenDescriptor = new JwtSecurityToken(issuer, audience, claims,
             expires: DateTime.Now.AddDays(tokenLifetime),
             signingCredentials: credentials);
@@ -44,13 +54,45 @@ public class TokenServices : ITokenServices
         }
         return res;
     }
+    public string BuildToken2(string key, string issuer, string audience, UsersEntity user, IEnumerable<GetUserRolesResponse> userRoles)
+    {
+        var claims = new List<Claim>
+{
+    new Claim(ClaimTypes.Email, user.Email!),
+    new Claim("IsNewPasswordRequired", user.IsNewPasswordRequired.ToString()!),
+    new Claim("HospitalId", user.HospitalId.ToString()!),
+    new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()!)
+};
 
+        foreach (var role in userRoles)
+        {
+            claims.Add(new Claim(ClaimTypes.Role, role.RoleName));
+        }
+
+        var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key));
+        var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256Signature);
+        double tokenLifetime = InfrastructureConstants.TOKEN_EXPIRY_DURATION_DAYS;
+        double.TryParse(Environment.GetEnvironmentVariable(EnvFileConstants.ACCESS_TOKEN_LIFETIME_IN_DAYS), out tokenLifetime);
+        var tokenDescriptor = new JwtSecurityToken(issuer, audience, claims,
+            expires: DateTime.Now.AddDays(tokenLifetime),
+            signingCredentials: credentials);
+        string res = string.Empty;
+        try
+        {
+            res = new JwtSecurityTokenHandler().WriteToken(tokenDescriptor);
+        }
+        catch (Exception ex)
+        {
+
+        }
+        return res;
+    }
     public string BuildToken(string key, string issuer, string audience, UserEntity user, Claim[] claims)
     {
         var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key));
         var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256Signature);
         double tokenLifetime = InfrastructureConstants.TOKEN_EXPIRY_DURATION_DAYS;
-        double.TryParse(VariableBuilder.GetVariable(EnvFileConstants.ACCESS_TOKEN_LIFETIME_IN_DAYS), out tokenLifetime);
+        double.TryParse(Environment.GetEnvironmentVariable(EnvFileConstants.ACCESS_TOKEN_LIFETIME_IN_DAYS), out tokenLifetime);
         var tokenDescriptor = new JwtSecurityToken(issuer, audience, claims,
             expires: DateTime.Now.AddDays(tokenLifetime),
             signingCredentials: credentials);
@@ -164,5 +206,62 @@ public class TokenServices : ITokenServices
         }
 
         return true;
+    }
+
+    public ClaimsPrincipal GetPrincipalFromToken(string token)
+    {
+        var tokenHandler = new JwtSecurityTokenHandler();
+
+        try
+        {
+            // Validate the token and extract the principal
+            var validationParameters = new TokenValidationParameters
+            {
+                ValidateIssuerSigningKey = true,
+                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Environment.GetEnvironmentVariable(EnvFileConstants.ACCESS_TOKEN_SECRET))),
+                ValidateIssuer = true,
+                ValidIssuer = Environment.GetEnvironmentVariable(EnvFileConstants.ISSUER),
+                ValidateAudience = true,
+                ValidAudience = Environment.GetEnvironmentVariable(EnvFileConstants.AUDIENCE),
+                ValidateLifetime = true, // Ensure the token is not expired
+                ClockSkew = TimeSpan.Zero // No tolerance for expiration time
+            };
+
+            // Validate the token and return the principal
+            var principal = tokenHandler.ValidateToken(token, validationParameters, out var validatedToken);
+
+
+            return principal;
+        }
+        catch (SecurityTokenExpiredException ex)
+        {
+            _logger.LogError("Token validation failed: Token has expired. Exception: {Message}", ex.Message);
+            return null;
+        }
+        catch (SecurityTokenInvalidSignatureException ex)
+        {
+            _logger.LogError("Token validation failed: Invalid token signature. Exception: {Message}", ex.Message);
+            return null;
+        }
+        catch (SecurityTokenInvalidIssuerException ex)
+        {
+            _logger.LogError("Token validation failed: Invalid token issuer. Exception: {Message}", ex.Message);
+            return null;
+        }
+        catch (SecurityTokenInvalidAudienceException ex)
+        {
+            _logger.LogError("Token validation failed: Invalid token audience. Exception: {Message}", ex.Message);
+            return null;
+        }
+        catch (SecurityTokenException ex)
+        {
+            _logger.LogError("Token validation failed: General security token exception. Exception: {Message}", ex.Message);
+            return null;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError("Token validation failed: Unexpected exception. Exception: {Message}", ex.Message);
+            return null;
+        }
     }
 }

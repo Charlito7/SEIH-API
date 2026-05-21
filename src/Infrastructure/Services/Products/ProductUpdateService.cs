@@ -1,6 +1,6 @@
 ﻿using Core.Application.Commons.ServiceResult;
 using Core.Application.Interface;
-using Core.Application.Model.Request;
+using Core.Application.Model.Request.Product;
 using Core.Domain.Entity;
 using System;
 using System.Collections.Generic;

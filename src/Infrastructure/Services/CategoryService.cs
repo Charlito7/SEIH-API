@@ -21,7 +21,10 @@ public class CategoryService : ICategoryService
         CategoryEntity category = new CategoryEntity()
         {
             Name = request.Name,
-            Description = request.Description
+            Description = request.Description,
+            Created = DateTime.UtcNow,
+            CreatedBy = "Wilbenson",
+            IsDeleted = false,
         };
         var result = await _repository.CreateAsync(category);
 
@@ -50,27 +53,19 @@ public class CategoryService : ICategoryService
 
         if (result.Count > 0)
         {
-            // Retrieve the first category from the result
             var firstCategory = result[0];
 
-            // convert the entity in category model
-#pragma warning disable CS8629 // Nullable value type may be null.
             GetCategoryRequest categoryModel = new GetCategoryRequest()
             {
                 Description = firstCategory.Description,
                 Name = firstCategory.Name,
                 CategoryId = (Guid)firstCategory.Id
             };
-#pragma warning restore CS8629 // Nullable value type may be null.
 
-            // Now, you can use categoryId as needed
-            // For example, you might want to return it as part of your ServiceResult
             return new ServiceResult<GetCategoryRequest>(categoryModel, true, HttpStatusCode.OK, "Success");
         }
         else
         {
-            // Handle the case where no category was found with the specified name
-            // You might want to return an error message or handle it in a way that fits your application's logic
             return new ServiceResult<GetCategoryRequest>(new GetCategoryRequest(), false, HttpStatusCode.BadRequest, "Failure");
         }
 
@@ -91,7 +86,7 @@ public class CategoryService : ICategoryService
         Name = categoryEntity.Name,
         Description = categoryEntity.Description
         // Add other properties as needed
-    });
+    }).OrderBy(c => c.Name); ;
 
         return new ServiceResult<IEnumerable<CreateCategoryRequest>>(category, true, HttpStatusCode.OK, "Category is added with success");
     }

@@ -1,12 +1,12 @@
 ﻿using AutoMapper;
 using Core.Domain.Entities;
 using Infrastructure.Constants;
-using Infrastructure.DotEnv;
 using Infrastructure.Mapper.Profiles;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
@@ -17,35 +17,43 @@ public static class DependencyInjection
 {
     public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
     {
-        string connectionString = "Server=127.0.0.1;Database=stockdb;Port=3306;Uid=charlito;Pwd=@Pbax643#;Connection Timeout=3600";
-        //string connectionString = "Server=(localdb)\\MSSQLLocalDB;Database=aurabe;Trusted_Connection=True;";
+        string connectionString = Environment.GetEnvironmentVariable("CONNECTION_STRING")!;
+
 
         services.AddDbContext<AppDbContext>(options =>
              options.UseMySql(connectionString, new MySqlServerVersion(new Version(8, 0, 28))));
 
-         var serverVersion = ServerVersion.AutoDetect(connectionString);
+        var serverVersion = ServerVersion.AutoDetect(connectionString);
         services.AddDbContext<AppDbContext>(options =>
         {
-            options.UseMySql(
-                connectionString, serverVersion,
-                b => b.MigrationsAssembly(typeof(AppDbContext).Assembly.FullName));
+            options
+                .UseMySql(connectionString, serverVersion, b =>
+                    b.MigrationsAssembly(typeof(AppDbContext).Assembly.FullName))
+                .LogTo(Console.WriteLine, LogLevel.Information)
+                .EnableSensitiveDataLogging();
         });
-       /* services.AddDbContext<AppDbContext>(options =>
-        {
-            options.UseSqlServer(
-                connectionString,
-                b => b.MigrationsAssembly(typeof(AppDbContext).Assembly.FullName));
-        });
-        */
+        /* services.AddDbContext<AppDbContext>(options =>
+         {
+             options.UseSqlServer(
+                 connectionString,
+                 b => b.MigrationsAssembly(typeof(AppDbContext).Assembly.FullName));
+         });
+         */
 
         services.AddCors(options =>
         {
+            var originsRaw = Environment.GetEnvironmentVariable("ALLOWED_ORIGINS") ?? "";
+            var allowedOrigins = originsRaw
+                .Split(new[] { ',', ';', ' ' }, StringSplitOptions.RemoveEmptyEntries)
+                .Select(o => o.Trim().TrimEnd('/'))
+                .ToArray();
             options.AddPolicy("GeneralPolicy",
                 policy =>
                 {
-                    policy.AllowAnyOrigin()
-                        .AllowAnyHeader()
-                        .AllowAnyMethod();
+                    policy.WithOrigins(allowedOrigins) // Specify the allowed origin
+                          .AllowAnyHeader()
+                          .AllowAnyMethod()
+                          .AllowCredentials(); // Allow credentials
                 });
         });
 
@@ -96,7 +104,12 @@ public static class DependencyInjection
             .AddEntityFrameworkStores<AppDbContext>();
 
 
-        DIExtensions.AddServices(services);
+        // Replace this line:
+        // DIExtensions.AddServices(services);
+
+        // With this line:
+        DIExtensions.AddServices(services, configuration);
+       // DIExtensions.AddServices(services);
 
         services.AddAuthentication(
     options =>
@@ -111,6 +124,21 @@ public static class DependencyInjection
         {
             options.SaveToken = true;
             options.RequireHttpsMetadata = false; //TODO: Change to true in Production
+            options.Events = new JwtBearerEvents
+            {
+                OnMessageReceived = context =>
+                {
+                    // Cherche le cookie "SessionId"
+                    var token = context.Request.Cookies["SessionId"];
+                    if (!string.IsNullOrEmpty(token))
+                    {
+                        context.Token = token;
+                    }
+
+                    return Task.CompletedTask;
+                }
+            };
+
             options.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
             {
                 NameClaimType = "name",
@@ -118,9 +146,9 @@ public static class DependencyInjection
                 ValidateAudience = true,
                 ValidateLifetime = true,
                 ValidateIssuerSigningKey = true,
-                ValidIssuer = VariableBuilder.GetVariable(EnvFileConstants.ISSUER),
-                ValidAudience = VariableBuilder.GetVariable(EnvFileConstants.AUDIENCE),
-                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(VariableBuilder.GetVariable(EnvFileConstants.ACCESS_TOKEN_SECRET)!)),
+                ValidIssuer = Environment.GetEnvironmentVariable(EnvFileConstants.ISSUER),
+                ValidAudience = Environment.GetEnvironmentVariable(EnvFileConstants.AUDIENCE),
+                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Environment.GetEnvironmentVariable(EnvFileConstants.ACCESS_TOKEN_SECRET)!)),
                 ClockSkew = TimeSpan.Zero
 
             };

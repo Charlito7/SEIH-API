@@ -4,7 +4,7 @@ using Core.Application.Interface.Token;
 using Core.Application.Model.Request;
 using Core.Application.Model.Response;
 using Infrastructure.Constants;
-using Infrastructure.DotEnv;
+
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
@@ -33,7 +33,7 @@ namespace WebApi.Controllers.Token
             var refreshToken = model.RefreshToken; //deserializedData?.RefreshToken;
 
             var principal = _services.GetPrincipalFromExpiredToken(accessToken!,
-                                                            VariableBuilder.GetVariable(EnvFileConstants.ACCESS_TOKEN_SECRET));
+                                                            Environment.GetEnvironmentVariable(EnvFileConstants.ACCESS_TOKEN_SECRET));
             if(principal == null)
             {
                 return Unauthorized("Invalid Client Request");
@@ -54,15 +54,16 @@ namespace WebApi.Controllers.Token
                 {
 
                     var isTokenValidated = _services
-                        .ValidateTokenWithoutExpiryTime(VariableBuilder.GetVariable(EnvFileConstants.ACCESS_TOKEN_SECRET),
-                    VariableBuilder.GetVariable(EnvFileConstants.ISSUER), VariableBuilder.GetVariable(EnvFileConstants.AUDIENCE),
+                        .ValidateTokenWithoutExpiryTime(Environment.GetEnvironmentVariable(EnvFileConstants.ACCESS_TOKEN_SECRET),
+                    Environment.GetEnvironmentVariable(EnvFileConstants.ISSUER), Environment.GetEnvironmentVariable(EnvFileConstants.AUDIENCE),
                                                 accessToken);
                     if (isTokenValidated)
                     {
+                        IList<string> userRoles = await _userManager.GetRolesAsync(user);
                         var newGeneratedToken = _services
-                        .BuildToken(VariableBuilder.GetVariable(EnvFileConstants.ACCESS_TOKEN_SECRET),
-                    VariableBuilder.GetVariable(EnvFileConstants.ISSUER), VariableBuilder.GetVariable(EnvFileConstants.AUDIENCE),
-                                                user);
+                        .BuildToken(Environment.GetEnvironmentVariable(EnvFileConstants.ACCESS_TOKEN_SECRET),
+                    Environment.GetEnvironmentVariable(EnvFileConstants.ISSUER), Environment.GetEnvironmentVariable(EnvFileConstants.AUDIENCE),
+                                                user, userRoles);
                         HttpContext.Session.SetString("Token", newGeneratedToken);
 
                         var newRefreshToken = _services.GenerateRefreshToken();

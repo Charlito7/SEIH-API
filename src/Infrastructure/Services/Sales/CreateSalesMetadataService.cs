@@ -10,6 +10,7 @@ using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using static Azure.Core.HttpHeader;
@@ -30,41 +31,31 @@ namespace Infrastructure.Services.Sales
         }
         public async Task<ServiceResult<CreateSalesMetadataResponse>> CreateSalesMetadataAsync(CreateSalesMetadataRequest request)
         {
-            if (string.IsNullOrEmpty(request.Status.ToString()) )
-            {
-
-            }
 
             //Check seller info
-
-            // Check
-            if(request.ChangeDue != (request.CashReceived - request.TotalAmount)) { 
-
-            }
 
             //check 
             if(request.PaymentType == PaymentMethodEnum.MONCASH.ToString() || request.PaymentType == PaymentMethodEnum.NATCASH.ToString() || request.PaymentType == PaymentMethodEnum.PAV.ToString())
             {
                 if(string.IsNullOrEmpty(request.PaymentTypeTransactionID))
                 {
-
+                    return new ServiceResult<CreateSalesMetadataResponse>(new CreateSalesMetadataResponse(), false, HttpStatusCode.BadRequest,
+               "Error on the refund");
                 }
             }
 
             var salesMetadataEntity = new SalesMetadataEntity()
             {
-                TransactionDate = request.TransactionDate,
-                CustomerCode = request.CustomerCode,
-                OrderTaxPercentage = request.OrderTaxPercentage,
-                ShippingCost = request.ShippingCost,
-                ShippingAddress = request.ShippingAddress,
-                Status = request.Status.ToString(),
+                TransactionDate =DateTime.Now,
+                CustomerCode = "N/A",
+                OrderTaxPercentage = 0,
+                ShippingCost = 0,
+                ShippingAddress = "N/A",
+                Status = SalesStatusEnum.DELIVERED.ToString(),
                 Notes = request.Notes ?? string.Empty,
-                SellerCode = request.SellerCode,
-                SellerName = request.SellerName,
-                TotalAmount = request.TotalAmount,
+                SellerCode = "TBD",
+                TotalAmount = 0,
                 CashReceived = request.CashReceived,
-                ChangeDue = request.ChangeDue,
                 PaymentType = request.PaymentType.ToString(),
                 PaymentTypeTransactionID = request.PaymentTypeTransactionID
 

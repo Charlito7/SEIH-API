@@ -8,5 +8,5 @@ namespace Core.Application.Model.Request;
 
 public class UserRoleCheck
 {
-    public string? role { get; set; }
+    public List<string> roles { get; set; }
 }

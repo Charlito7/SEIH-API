@@ -7,6 +7,7 @@ using Newtonsoft.Json;
 using System.Security.Claims;
 using System.Text.Json.Serialization;
 using WebApi.Controllers.Base;
+using WebApi.Filters;
 
 namespace WebApi.Controllers.Admin
 {
@@ -23,7 +24,7 @@ namespace WebApi.Controllers.Admin
         }
 
         [HttpPost]
-        [Authorize]
+        [AuthorizeRoles]
         [Route("add", Name = "AddRolesToUser")]
         public async Task<IActionResult> AdminAssignRolesAsync([FromBody] string data)
         {
@@ -34,7 +35,7 @@ namespace WebApi.Controllers.Admin
             {
                 var myModel = new AddRolesToUserModel
                 {
-                    Email = "mpalaniappan@i2systems.com",
+                    Email = "mpalaniappan@gmail.com",
                     Roles = new string[] { "User", "Admin"}
                 };
 

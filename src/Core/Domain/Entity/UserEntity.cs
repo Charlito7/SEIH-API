@@ -1,10 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
-using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Core.Domain.Entities;
 
@@ -25,12 +20,15 @@ public class UserEntity : IdentityUser
     public byte[]? Salt { get; set; }
     public string? RefreshToken { get; set; }
     public DateTime RefreshTokenExpiryTime { get; set; }
+    //Hospital
+    public Guid HospitalId { get; set; }
 
     //auditable
     public string? CreatedBy { get; set; }
     public DateTime? LastModified { get; set; }
     public string? LastModifiedBy { get; set; }
     public bool? IsDeleted { get; set; }
+    public bool? IsNewPasswordRequired { get; set; }
     public DateTime? DeletedOn { get; set; }
     public string? DeletedBy { get; set; }
 
@@ -45,4 +43,5 @@ public class UserEntity : IdentityUser
     public override bool EmailConfirmed { get; set; }
     public override bool LockoutEnabled { get; set; }
     public override int AccessFailedCount { get; set; }
+    
 }

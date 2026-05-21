@@ -20,7 +20,7 @@ namespace WebApi.Controllers.User
         [HttpPost]
         [AllowAnonymous]
         [Route("create", Name = "CreateUserAccount")]
-        public async Task<IActionResult> CreateUserAccountAsync([FromForm]CreateUserModel model)
+        public async Task<IActionResult> CreateUserAccountAsync(CreateUserModel model)
         {
             var result = await _service.CreateUserAsync(model);
 

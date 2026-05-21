@@ -17,5 +17,23 @@ public class CreateUserModel
     public string? Email { get; set; }
     [Required]
     public string? Password { get; set; }
-    public string? UserName { get { return Email; } }
+    public string? HospitalName { get; set; }
+}
+
+public class ChangePasswordModel
+{
+    [Required]
+    public string? OldPassword { get; set; }
+    [Required]
+    public string? NewPassword { get; set; }
+
+}
+
+public class ChangePasswordByManagerModel
+{
+    [Required]
+    public string? UserEmail { get; set; }
+    [Required]
+    public string? NewPassword { get; set; }
+
 }

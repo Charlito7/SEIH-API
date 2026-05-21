@@ -1,12 +1,8 @@
 ﻿using Core.Application.Interface.Token;
 using Infrastructure.Constants;
-using Infrastructure.DotEnv;
-using Microsoft.AspNetCore.Authorization;
+
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Authorization;
-using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.AspNetCore.Mvc.Filters;
-using Microsoft.Net.Http.Headers;
 
 namespace WebApi.Controllers.Base
 {
@@ -28,36 +24,37 @@ namespace WebApi.Controllers.Base
                     .SelectMany(x => x.Value!.Errors)
                     .ToList();
                 context.Result = new BadRequestObjectResult(errors);
+                return;
             }
 
-            var headers = context.HttpContext.Request.Headers;
-
-            if (headers.ContainsKey("Authorization"))
+            // Read the token from the cookie
+            var accessToken = context.HttpContext.Request.Cookies["SessionId"];
+            if (!string.IsNullOrEmpty(accessToken))
             {
-                bool isTokenValidated = false;
-                var accessToken = headers[HeaderNames.Authorization].ToString().Replace("Bearer ", string.Empty);
-                if (!string.IsNullOrEmpty(accessToken))
-                {
-                    isTokenValidated = _tokenServices
+                bool isTokenValidated = _tokenServices
                     .ValidateTokenWithExpiryTime(
-                    VariableBuilder.GetVariable(EnvFileConstants.ACCESS_TOKEN_SECRET),
-                    VariableBuilder.GetVariable(EnvFileConstants.ISSUER), 
-                    VariableBuilder.GetVariable(EnvFileConstants.AUDIENCE),
-                    accessToken);
-                }
-                else
-                {
-                    context.Result = new UnauthorizedObjectResult("Invalid Token");
-                }
+                        Environment.GetEnvironmentVariable(EnvFileConstants.ACCESS_TOKEN_SECRET),
+                        Environment.GetEnvironmentVariable(EnvFileConstants.ISSUER),
+                        Environment.GetEnvironmentVariable(EnvFileConstants.AUDIENCE),
+                        accessToken);
+
                 if (!isTokenValidated)
                 {
                     context.Result = new UnauthorizedObjectResult("Invalid Token");
+                    return;
                 }
+
+                // Set the user principal if the token is valid
+                var principal = _tokenServices.GetPrincipalFromToken(accessToken);
+                context.HttpContext.User = principal;
             }
-            
+            else
+            {
+                context.Result = new UnauthorizedObjectResult("Token not found");
+                return;
+            }
+
             base.OnActionExecuting(context);
         }
-
-
     }
 }

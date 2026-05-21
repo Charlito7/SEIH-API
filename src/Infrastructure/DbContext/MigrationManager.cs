@@ -48,7 +48,6 @@ public static class MigrationManager
         {
             var context = services.GetRequiredService<AppDbContext>();
             ApplicationDbContextSeed.Initialize(context);
-            //ApplicationDbContextSeed.AddAdminRole(services, "dartarubens@gmail.com");
         }
         catch
         {

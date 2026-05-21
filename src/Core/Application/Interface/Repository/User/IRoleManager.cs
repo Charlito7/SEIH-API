@@ -9,7 +9,6 @@ namespace Application.Interfaces.Repositories.User;
 
 public interface IRoleManager
 {
-    
     Task<bool> IsRoleExists(string roleName);
     Task<IdentityResult> CreateRoleAsync(string roleName);
     

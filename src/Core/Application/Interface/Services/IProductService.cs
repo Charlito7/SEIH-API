@@ -1,5 +1,6 @@
 ﻿using Core.Application.Commons.ServiceResult;
-using Core.Application.Model.Request;
+using Core.Application.Model.Request.Product;
+using Core.Application.Model.Response;
 using Core.Application.Model.Response.Product;
 using System.Net;
 
@@ -14,4 +15,5 @@ public interface IProductService
     public Task<ServiceResult<HttpStatusCode>> DeleteProductAsync(Guid productId);
     public Task<ServiceResult<ProductRequest>> GetProductByNameAsync(string name);
     public Task<ServiceResult<GetProductPaginationResponse>> GetProductsWithPaginationAsync(int page = 1, int pageSize = 10);
+    Task<IEnumerable<GetProductSuggestionsResponse>> GetProductSuggestions(string userInput);
 }

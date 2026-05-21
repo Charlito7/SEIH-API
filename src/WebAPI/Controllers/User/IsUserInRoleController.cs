@@ -2,11 +2,10 @@
 using Core.Application.Interface.Token;
 using Core.Application.Interfaces.Services.User;
 using Core.Application.Model.Request;
-using Infrastructure.Token;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Security.Claims;
 using WebApi.Controllers.Base;
+using WebApi.Filters;
 
 namespace WebApi.Controllers.User
 {
@@ -24,29 +23,36 @@ namespace WebApi.Controllers.User
             _userManager = userManager;
         }
 
-        [Authorize]
+        [AuthorizeRoles]
         [HttpPost]
         [Route("check")]
-        public async Task<IActionResult> IsUserInRoleAsync(UserRoleCheck model)
+        public async Task<IActionResult> IsUserInRoleAsync(UserRoleCheck req)
         {
-            if(string.IsNullOrEmpty(model.role))
-            {
-                return BadRequest("Bad model");
-            }
-            var userEmail = this.User.FindFirst(ClaimTypes.Email)?.Value;
-            if (userEmail == null || string.IsNullOrEmpty(userEmail))
-                return BadRequest();
+            bool hasRole = req.roles.Any(role => User.IsInRole(role));
 
-            var user = await _userManager.FindByEmailAsync(userEmail);
-            if (user == null)
-                return Unauthorized();
-
-            var result = await _service.DoesUserBelongToRoleAsync(model.role, userEmail);
-            if(result.Result == false)
+            if (hasRole)
             {
-                return Unauthorized();
+                return Ok(hasRole);
             }
-            return Ok(result);
+            return BadRequest(hasRole);
+            /* if (req.roles.Count() <= 0)
+             {
+                 return BadRequest("Bad model");
+             }
+             var userEmail = this.User.FindFirst(ClaimTypes.Email)?.Value;
+             if (userEmail == null || string.IsNullOrEmpty(userEmail))
+                 return BadRequest();
+
+             var user = await _userManager.FindByEmailAsync(userEmail);
+             if (user == null)
+                 return Unauthorized();
+
+             var result = await _service.DoesUserBelongToRoleAsync(model.role, userEmail);
+             if(result.Result == false)
+             {
+                 return Unauthorized();
+             } */
+
         }
     }
 }

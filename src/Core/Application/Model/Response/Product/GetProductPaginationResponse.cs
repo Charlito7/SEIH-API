@@ -1,4 +1,4 @@
-﻿using Core.Application.Model.Request;
+﻿using Core.Application.Model.Request.Product;
 using Core.Domain.Entity;
 using System;
 using System.Collections.Generic;

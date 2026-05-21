@@ -8,6 +8,5 @@ namespace Core.Application.Interfaces.Services.User;
 public interface ICreateUserService
 {
     Task<ServiceResult<bool>> CreateUserAsync(CreateUserModel dataModel);
-
     Task<ServiceResult<bool>> CreateUserAsync(CreateUserModel dataModel, ExternalLoginInfo info);
 }

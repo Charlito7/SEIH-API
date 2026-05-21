@@ -1,79 +1,82 @@
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Identity;
+using Core.Application.Interface.Repository.SEIH;
+using Core.Application.Interface.Security;
+using Core.Application.Interface.Services.SEIH.Transfer;
+using DotNetEnv;
 using Infrastructure;
-using Infrastructure.DotEnv;
-using Infrastructure.Constants;
-
+using Infrastructure.Repository.SEIH.Hospital;
+using Infrastructure.Repository.SEIH.Transfer;
+using Infrastructure.Security;
+using Infrastructure.Services.Security;
+using Infrastructure.Services.SEIH.Transfer;
+using Microsoft.AspNetCore.Identity;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-builder.Services.AddInfrastructure(builder.Configuration);
+Env.Load();
+builder.Configuration["Kestrel:Endpoints:Https:Certificate:Password"] =
+    Environment.GetEnvironmentVariable("CERTIFICATE_PASSWORD");
+
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+builder.Services.AddInfrastructure(builder.Configuration);
+
+builder.Services.AddScoped<IInstitutionKeyService, InstitutionKeyService>();
+builder.Services.AddScoped<IInstitutionKeyRepository, InstitutionKeyRepository>();
+builder.Services.AddScoped<ITransferRequestNetworkService, TransferRequestNetworkService>();
+builder.Services.AddScoped<ITransferRequestRepository, TransferRequestRepository>();
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-//builder.Services.AddAWSService<IAmazonS3>();
+
 builder.Services.Configure<DataProtectionTokenProviderOptions>(options =>
-        options.TokenLifespan = TimeSpan.FromHours(3));
+    options.TokenLifespan = TimeSpan.FromHours(3));
 
-
-//builder.Services.Configure<IdentityOptions>(opts => { opts.SignIn.RequireConfirmedEmail= true; });
-
-//builder.Services.AddAuthentication()
-//    .AddGoogle("google", googleOptions =>
-//    {
-//        googleOptions.ClientId = builder.Configuration["Authentication:Google:ClientId"]!;
-//        googleOptions.ClientSecret = builder.Configuration["Authentication:Google:ClientSecret"]!;
-//    });
+builder.Logging.AddConsole();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+app.UseForwardedHeaders();
+
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
-    app.UseForwardedHeaders();
+}
+else
+{
+    app.UseHsts();
 }
 
+app.UseHttpsRedirection();
+
 app.UseCors("GeneralPolicy");
-
-app.UseHsts();
-
-app.Use((context, next) =>
-{
-    var host = VariableBuilder.GetVariable(EnvFileConstants.HOST);
-    context.Request.Host = new HostString(host);
-    context.Request.Scheme = VariableBuilder.GetVariable(EnvFileConstants.SCHEME);
-    return next();
-});
-
 app.UseCookiePolicy();
-
-app.UseAuthentication();
-app.UseForwardedHeaders();
-app.UseAuthorization();
-
 app.UseSession();
 
-app.Use(async (context, next) =>
-{
-    var token = context.Session.GetString("Token");
-    if (!string.IsNullOrEmpty(token))
+app.UseWhen(
+    context => context.Request.Path.StartsWithSegments("/api/rest"),
+    restApp =>
     {
-        if (!context.Request.Headers.ContainsKey("Authorization"))
-        {
-            context.Request.Headers.Add("Authorization", "Bearer " + token);
-        }
-    }
+        restApp.UseMiddleware<IpWhitelistMiddleware>();
+        restApp.UseMiddleware<ApiKeyMiddleware>();
 
-    await next();
-});
+        restApp.UseWhen(
+            context => !context.Request.Path.StartsWithSegments("/api/rest/seih/hospital/network"),
+            inner =>
+            {
+                inner.UseMiddleware<SignatureMiddleware>();
+            });
+    }
+);
+
+app.UseWhen(
+    context => !context.Request.Path.StartsWithSegments("/api/rest"),
+    uiApp =>
+    {
+        uiApp.UseAuthentication();
+        uiApp.UseAuthorization();
+    }
+);
 
 app.MapControllers();
 
-//app.MigrateDatabase();
-app.Seeder();
-app.MigrateDatabase();
 app.Run();

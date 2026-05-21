@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 using WebApi.Controllers.Base;
+using WebApi.Filters;
 
 namespace WebApi.Controllers.User
 {
@@ -19,7 +20,7 @@ namespace WebApi.Controllers.User
 
         [HttpPost]
         [Route("data/get")]
-        [Authorize]
+        [AuthorizeRoles]
         public async Task<IActionResult> GetUsersProfileDataAsync()
         {
             var userEmail = this.User.FindFirst(ClaimTypes.Email)?.Value;

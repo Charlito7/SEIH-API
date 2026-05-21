@@ -52,9 +52,9 @@ public class Repository<T> : IRepository<T> where T : class
 
     public async Task<T> GetByIdAsync(Guid id)
     {
-#pragma warning disable CS8603 // Possible null reference return.
+
         return await _entities.FindAsync(id);
-#pragma warning restore CS8603 // Possible null reference return.
+
     }
 
     public async Task<List<T>> FindListAsync(Expression<Func<T, bool>> predicate)

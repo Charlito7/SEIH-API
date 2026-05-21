@@ -27,7 +27,7 @@ namespace WebApi.Controllers.Admin
         }
 
         [HttpPost]
-        //[Authorize]
+        //[AuthorizeRoles]
         [Route("locally/add", Name = "LocallyAddRolesToUser")]
         public async Task<IActionResult> AdminLocallyAssignRolesAsync([FromBody] AddRolesToUserModel request)
         {

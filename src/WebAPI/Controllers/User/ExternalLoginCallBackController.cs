@@ -58,7 +58,7 @@ namespace WebApi.Controllers.User
             //}
 
             var returnURL = _endPointBuilder.BuildExternalLoginRedirectURL(result.Result.Token!, result.Result.RefreshToken!);
-            //var returnURL = $@"http://localhost:5173/?token={result.Result.Token}&refreshToken={result.Result.RefreshToken}";
+            //var returnURL = $@"http://localhost:5178/?token={result.Result.Token}&refreshToken={result.Result.RefreshToken}";
            
             return Redirect(returnURL.ToString());
         }*/

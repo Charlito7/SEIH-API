@@ -1,37 +1,37 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\User\\Documents\\GitHub\\Aurabe-POS\\src\\Infrastructure\\Infrastructure.csproj": {}
+    "C:\\Users\\wilbe\\Documents\\Github\\Final\\SEIH_Hub_Central\\src\\Infrastructure\\Infrastructure.csproj": {}
   },
   "projects": {
-    "C:\\Users\\User\\Documents\\GitHub\\Aurabe-POS\\src\\Core\\Core.csproj": {
+    "C:\\Users\\wilbe\\Documents\\Github\\Final\\SEIH_Hub_Central\\src\\Core\\Core.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\User\\Documents\\GitHub\\Aurabe-POS\\src\\Core\\Core.csproj",
+        "projectUniqueName": "C:\\Users\\wilbe\\Documents\\Github\\Final\\SEIH_Hub_Central\\src\\Core\\Core.csproj",
         "projectName": "Core",
-        "projectPath": "C:\\Users\\User\\Documents\\GitHub\\Aurabe-POS\\src\\Core\\Core.csproj",
-        "packagesPath": "C:\\Users\\User\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\User\\Documents\\GitHub\\Aurabe-POS\\src\\Core\\obj\\",
+        "projectPath": "C:\\Users\\wilbe\\Documents\\Github\\Final\\SEIH_Hub_Central\\src\\Core\\Core.csproj",
+        "packagesPath": "C:\\Users\\wilbe\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\wilbe\\Documents\\Github\\Final\\SEIH_Hub_Central\\src\\Core\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
         ],
         "configFilePaths": [
-          "C:\\Users\\User\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\wilbe\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
-          "net7.0"
+          "net8.0"
         ],
         "sources": {
           "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
-          "C:\\Program Files\\dotnet\\library-packs": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
-          "net7.0": {
-            "targetAlias": "net7.0",
+          "net8.0": {
+            "framework": "net8.0",
+            "targetAlias": "net8.0",
             "projectReferences": {}
           }
         },
@@ -44,63 +44,63 @@
           "enableAudit": "true",
           "auditLevel": "low",
           "auditMode": "direct"
-        }
+        },
+        "SdkAnalysisLevel": "10.0.300"
       },
       "frameworks": {
-        "net7.0": {
-          "targetAlias": "net7.0",
+        "net8.0": {
+          "framework": "net8.0",
+          "targetAlias": "net8.0",
           "dependencies": {
+            "DotNetEnv": {
+              "target": "Package",
+              "version": "[3.1.1, )"
+            },
             "Microsoft.AspNetCore.Authentication.JwtBearer": {
               "target": "Package",
-              "version": "[7.0.15, )"
+              "version": "[8.0.14, )"
             },
             "Microsoft.AspNetCore.Identity.EntityFrameworkCore": {
               "target": "Package",
-              "version": "[7.0.15, )"
-            },
-            "Microsoft.EntityFrameworkCore": {
-              "target": "Package",
-              "version": "[7.0.15, )"
+              "version": "[8.0.14, )"
             },
             "Microsoft.EntityFrameworkCore.Abstractions": {
               "target": "Package",
-              "version": "[7.0.15, )"
+              "version": "[9.0.3, )"
             },
-            "Microsoft.EntityFrameworkCore.Design": {
-              "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
-              "suppressParent": "All",
+            "Microsoft.EntityFrameworkCore.SqlServer": {
               "target": "Package",
-              "version": "[7.0.15, )"
-            },
-            "Microsoft.EntityFrameworkCore.Relational": {
-              "target": "Package",
-              "version": "[7.0.15, )"
+              "version": "[8.0.14, )"
             },
             "Microsoft.EntityFrameworkCore.Tools": {
               "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
               "suppressParent": "All",
               "target": "Package",
-              "version": "[7.0.15, )"
+              "version": "[8.0.14, )"
             },
             "Microsoft.Extensions.DependencyInjection": {
               "target": "Package",
-              "version": "[7.0.0, )"
+              "version": "[9.0.3, )"
             },
             "Microsoft.Extensions.DependencyInjection.Abstractions": {
               "target": "Package",
-              "version": "[7.0.0, )"
+              "version": "[9.0.3, )"
+            },
+            "MySqlConnector": {
+              "target": "Package",
+              "version": "[2.3.5, )"
             },
             "Pomelo.EntityFrameworkCore.MySql": {
               "target": "Package",
-              "version": "[7.0.0, )"
+              "version": "[8.0.3, )"
             },
             "Swashbuckle.AspNetCore": {
               "target": "Package",
-              "version": "[6.5.0, )"
+              "version": "[7.3.1, )"
             },
             "Swashbuckle.AspNetCore.SwaggerGen": {
               "target": "Package",
-              "version": "[6.5.0, )"
+              "version": "[7.3.1, )"
             }
           },
           "imports": [
@@ -119,41 +119,41 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.300\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.300/PortableRuntimeIdentifierGraph.json"
         }
       }
     },
-    "C:\\Users\\User\\Documents\\GitHub\\Aurabe-POS\\src\\Infrastructure\\Infrastructure.csproj": {
+    "C:\\Users\\wilbe\\Documents\\Github\\Final\\SEIH_Hub_Central\\src\\Infrastructure\\Infrastructure.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\User\\Documents\\GitHub\\Aurabe-POS\\src\\Infrastructure\\Infrastructure.csproj",
+        "projectUniqueName": "C:\\Users\\wilbe\\Documents\\Github\\Final\\SEIH_Hub_Central\\src\\Infrastructure\\Infrastructure.csproj",
         "projectName": "Infrastructure",
-        "projectPath": "C:\\Users\\User\\Documents\\GitHub\\Aurabe-POS\\src\\Infrastructure\\Infrastructure.csproj",
-        "packagesPath": "C:\\Users\\User\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\User\\Documents\\GitHub\\Aurabe-POS\\src\\Infrastructure\\obj\\",
+        "projectPath": "C:\\Users\\wilbe\\Documents\\Github\\Final\\SEIH_Hub_Central\\src\\Infrastructure\\Infrastructure.csproj",
+        "packagesPath": "C:\\Users\\wilbe\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\wilbe\\Documents\\Github\\Final\\SEIH_Hub_Central\\src\\Infrastructure\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
         ],
         "configFilePaths": [
-          "C:\\Users\\User\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\wilbe\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
-          "net7.0"
+          "net8.0"
         ],
         "sources": {
           "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
-          "C:\\Program Files\\dotnet\\library-packs": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
-          "net7.0": {
-            "targetAlias": "net7.0",
+          "net8.0": {
+            "framework": "net8.0",
+            "targetAlias": "net8.0",
             "projectReferences": {
-              "C:\\Users\\User\\Documents\\GitHub\\Aurabe-POS\\src\\Core\\Core.csproj": {
-                "projectPath": "C:\\Users\\User\\Documents\\GitHub\\Aurabe-POS\\src\\Core\\Core.csproj"
+              "C:\\Users\\wilbe\\Documents\\Github\\Final\\SEIH_Hub_Central\\src\\Core\\Core.csproj": {
+                "projectPath": "C:\\Users\\wilbe\\Documents\\Github\\Final\\SEIH_Hub_Central\\src\\Core\\Core.csproj"
               }
             }
           }
@@ -167,63 +167,67 @@
           "enableAudit": "true",
           "auditLevel": "low",
           "auditMode": "direct"
-        }
+        },
+        "SdkAnalysisLevel": "10.0.300"
       },
       "frameworks": {
-        "net7.0": {
-          "targetAlias": "net7.0",
+        "net8.0": {
+          "framework": "net8.0",
+          "targetAlias": "net8.0",
           "dependencies": {
             "AutoMapper": {
               "target": "Package",
-              "version": "[13.0.1, )"
+              "version": "[14.0.0, )"
+            },
+            "DotNetEnv": {
+              "target": "Package",
+              "version": "[3.1.1, )"
             },
             "Isopoh.Cryptography.Argon2": {
               "target": "Package",
               "version": "[2.0.0, )"
             },
+            "MailKit": {
+              "target": "Package",
+              "version": "[4.12.1, )"
+            },
             "Microsoft.AspNetCore.Authentication.JwtBearer": {
               "target": "Package",
-              "version": "[7.0.15, )"
+              "version": "[8.0.14, )"
             },
             "Microsoft.AspNetCore.Identity.EntityFrameworkCore": {
               "target": "Package",
-              "version": "[7.0.15, )"
-            },
-            "Microsoft.EntityFrameworkCore": {
-              "target": "Package",
-              "version": "[7.0.15, )"
+              "version": "[8.0.14, )"
             },
             "Microsoft.EntityFrameworkCore.Abstractions": {
               "target": "Package",
-              "version": "[7.0.15, )"
-            },
-            "Microsoft.EntityFrameworkCore.Design": {
-              "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
-              "suppressParent": "All",
-              "target": "Package",
-              "version": "[7.0.15, )"
-            },
-            "Microsoft.EntityFrameworkCore.Relational": {
-              "target": "Package",
-              "version": "[7.0.15, )"
+              "version": "[9.0.3, )"
             },
             "Microsoft.EntityFrameworkCore.SqlServer": {
               "target": "Package",
-              "version": "[7.0.15, )"
+              "version": "[8.0.14, )"
             },
             "Microsoft.EntityFrameworkCore.Tools": {
               "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
               "suppressParent": "All",
               "target": "Package",
-              "version": "[7.0.15, )"
+              "version": "[8.0.14, )"
             },
             "Microsoft.Extensions.DependencyInjection": {
               "target": "Package",
-              "version": "[7.0.0, )"
+              "version": "[9.0.3, )"
             },
             "Microsoft.Extensions.DependencyInjection.Abstractions": {
               "target": "Package",
-              "version": "[7.0.0, )"
+              "version": "[9.0.3, )"
+            },
+            "MimeKit": {
+              "target": "Package",
+              "version": "[4.12.0, )"
+            },
+            "MySqlConnector": {
+              "target": "Package",
+              "version": "[2.3.5, )"
             },
             "Newtonsoft.Json": {
               "target": "Package",
@@ -231,15 +235,27 @@
             },
             "Pomelo.EntityFrameworkCore.MySql": {
               "target": "Package",
-              "version": "[7.0.0, )"
+              "version": "[8.0.3, )"
+            },
+            "Quartz": {
+              "target": "Package",
+              "version": "[3.14.0, )"
+            },
+            "Quartz.Extensions.Hosting": {
+              "target": "Package",
+              "version": "[3.14.0, )"
+            },
+            "QuestPDF": {
+              "target": "Package",
+              "version": "[2025.5.1, )"
             },
             "Swashbuckle.AspNetCore": {
               "target": "Package",
-              "version": "[6.5.0, )"
+              "version": "[7.3.1, )"
             },
             "Swashbuckle.AspNetCore.SwaggerGen": {
               "target": "Package",
-              "version": "[6.5.0, )"
+              "version": "[7.3.1, )"
             }
           },
           "imports": [
@@ -258,7 +274,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.300\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.300/PortableRuntimeIdentifierGraph.json"
         }
       }
     }

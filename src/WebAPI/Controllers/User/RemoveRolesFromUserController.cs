@@ -8,6 +8,7 @@ using Newtonsoft.Json;
 using System.Security.Claims;
 using System.Text.Json.Serialization;
 using WebApi.Controllers.Base;
+using WebApi.Filters;
 
 namespace WebApi.Controllers.User
 {
@@ -24,7 +25,7 @@ namespace WebApi.Controllers.User
         }
 
         [HttpPost]
-        [Authorize]
+        [AuthorizeRoles]
         [Route("remove", Name ="RemoveRolesFromUser")]
         public async Task<IActionResult> AdminAssignRolesAsync([FromBody] string data)
         {
@@ -37,20 +38,7 @@ namespace WebApi.Controllers.User
             if (isAdminResult.Result != true)
             {
                 return Unauthorized();
-            }
-
-
-            if (Environment.GetEnvironmentVariable(InfrastructureConstants.ASP_NET_CORE_ENVIRONMENT_NAME)
-                                                                        == InfrastructureConstants.DEV_ENVIRONMENT_NAME && data == "test")
-            {
-                var myModel = new AddRolesToUserModel
-                {
-                    Email = "dartarubens@gmail.com",
-                    Roles = new string[] { "Manager", "Planner" }
-                };
-
-                data = JsonConvert.SerializeObject(myModel);
-            }
+            }  
 
             if (string.IsNullOrWhiteSpace(data))
                 return BadRequest();

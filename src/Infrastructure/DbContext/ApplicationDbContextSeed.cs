@@ -21,16 +21,6 @@ public class ApplicationDbContextSeed
 
         if (dbContext.Set<UserEntity>().Any()) { return; }
 
-        dbContext.Set<UserEntity>().Add(new UserEntity
-        {
-            UserName = "dartarubens@gmail.com",
-            Email = "dartarubens@gmail.com",
-            FirstName = "Rubens",
-            LastName = "Benoit",
-            NormalizedEmail = "DARTARUBENS@GMAIL.COM",
-            NormalizedUserName = "DARTARUBENS@GMAIL.COM",
-            CreatedBy = "SEED"
-        });
 
         var roles = Enum.GetValues(typeof(UserRoleEnums)).Cast<UserRoleEnums>();
 
