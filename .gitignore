@@ -1,9 +1,10 @@
 # =========================
 # Build results
 # =========================
-bin/
-obj/
+[Bb]in/
+[Oo]bj/
 out/
+publish/
 
 # =========================
 # User-specific files
@@ -35,6 +36,8 @@ out/
 # =========================
 *.log
 logs/
+Log/
+Logs/
 
 # =========================
 # ASP.NET Core
@@ -42,18 +45,27 @@ logs/
 appsettings.Development.json
 appsettings.Local.json
 
+# IMPORTANT:
+# Ne PAS ignorer appsettings.json
+# ni appsettings.Production.json
+# sauf si secrets dedans
+
 # =========================
-# Secrets
+# Secrets / Certificates
 # =========================
 secrets.json
 *.pfx
 *.key
 *.pem
+*.crt
 
 # =========================
 # Entity Framework
 # =========================
 Migrations/*.Designer.cs
+
+# Garder les migrations principales
+!Migrations/
 
 # =========================
 # NuGet
@@ -61,12 +73,10 @@ Migrations/*.Designer.cs
 *.nupkg
 *.snupkg
 packages/
-.nuget/
 
-# =========================
-# Publish output
-# =========================
-publish/
+# Généralement inutile d’ignorer .nuget
+# sauf cas spécifique
+# .nuget/
 
 # =========================
 # OS generated files
@@ -81,6 +91,7 @@ node_modules/
 dist/
 build/
 coverage/
+.next/
 
 # =========================
 # Environment variables
@@ -107,12 +118,28 @@ temp/
 # =========================
 docker-compose.override.yml
 
+# Docker local overrides
+docker-compose.local.yml
+
 # =========================
 # Test Results
 # =========================
 TestResults/
+*.trx
 
 # =========================
 # Generated files
 # =========================
 Generated/
+
+# =========================
+# Azure / AWS / Terraform
+# =========================
+terraform.tfstate
+terraform.tfstate.*
+.terraform/
+
+# =========================
+# Misc
+# =========================
+*.cache
