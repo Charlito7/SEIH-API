@@ -15,17 +15,12 @@ using Core.Application.Interface.Services.SEIH.User;
 using Core.Application.Interface.Token;
 using Infrastructure.Repositories.User;
 using Infrastructure.Repository;
-using Infrastructure.Repository.Product;
-using Infrastructure.Repository.Sales;
 using Infrastructure.Repository.SEIH.Hospital;
 using Infrastructure.Repository.SEIH.User;
 using Infrastructure.Security;
 using Infrastructure.Security.Permission;
 using Infrastructure.Services;
 using Infrastructure.Services.Emails;
-using Infrastructure.Services.Products;
-using Infrastructure.Services.Sales;
-using Infrastructure.Services.SEIH;
 using Infrastructure.Services.SEIH.Hospital;
 using Infrastructure.Services.SEIH.Transfer;
 using Infrastructure.Services.SEIH.User;
@@ -62,18 +57,6 @@ namespace Infrastructure
 
             // Register Repository and Service using interfaces
             services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
-            services.AddScoped<IProductService, ProductService>();
-            services.AddScoped<ICategoryService, CategoryService>();
-            services.AddScoped<IProductUpdateService, ProductUpdateService>();
-            services.AddScoped<ICreateSalesService, CreateSalesService>();
-            services.AddScoped<IProductRepository, ProductRepository>();
-            services.AddScoped<ISalesRepository, SalesRepository>();
-            services.AddScoped<IGetSalesService, GetSalesServices>();
-            services.AddScoped<IEmailService, EmailService>();
-            services.AddScoped<IGetSellerDailySalesResumeService, GetSellerDailySalesResumeService>();
-
-
-
 
             //Security
             services.AddScoped<IHashingServices, HashingServices>();
