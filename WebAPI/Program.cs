@@ -13,8 +13,7 @@ using Microsoft.AspNetCore.Identity;
 var builder = WebApplication.CreateBuilder(args);
 
 Env.Load();
-builder.Configuration["Kestrel:Endpoints:Https:Certificate:Password"] =
-    Environment.GetEnvironmentVariable("CERTIFICATE_PASSWORD");
+
 
 builder.Services.AddControllers();
 builder.Services.AddInfrastructure(builder.Configuration);
