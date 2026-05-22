@@ -6,7 +6,8 @@ using Newtonsoft.Json;
 using WebApi.Controllers.Base;
 
 namespace WebApi.Controllers.User;
-
+//[ApiController]
+[NonController]
 [Route("user/external/provider/microsoft")]
 public class ExternalLoginController : BaseController
 {

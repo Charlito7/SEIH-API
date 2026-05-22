@@ -8,7 +8,8 @@ using WebApi.Filters;
 
 namespace WebAPI.Controllers.User;
 
-[ApiController]
+//[ApiController]
+[NonController]
 [Route("identity/user/password")]
 public class AdminChangePasswordController : AuthorizeBaseController
 {
