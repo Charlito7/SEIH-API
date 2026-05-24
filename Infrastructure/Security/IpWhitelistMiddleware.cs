@@ -48,7 +48,7 @@ namespace Infrastructure.Security
             {
                 _logger.LogWarning("IP not allowed: {IP}", remoteIp);
                 context.Response.StatusCode = StatusCodes.Status403Forbidden;
-                await context.Response.WriteAsync("IP not allowed.");
+                await context.Response.WriteAsync("IP not allowed.", remoteIp);
                 return;
             }
 Console.WriteLine("IP PASSED");
