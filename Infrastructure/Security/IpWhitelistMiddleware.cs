@@ -1,10 +1,5 @@
 using Microsoft.AspNetCore.Http;
-using System.Threading.Tasks;
-using Core.Application.Interface.Repository.SEIH;
 using Microsoft.Extensions.Logging;
-using System.Security.Cryptography.X509Certificates;
-using Core.Application.Interface.Services.SEIH;
-using System.Security.Cryptography;
 using Microsoft.Extensions.Configuration;
 
 namespace Infrastructure.Security
@@ -26,19 +21,22 @@ namespace Infrastructure.Security
         }
 
         public async Task InvokeAsync(HttpContext context)
-        {Console.WriteLine("IP WHITELIST START");
+        {
             var allowedIps = _config
                 .GetSection("AllowedIPs")
                 .Get<string[]>() ?? Array.Empty<string>();
 
-            var remoteIp = context.Connection.RemoteIpAddress?.ToString();
+            var remoteIpAddress = context.Connection.RemoteIpAddress;
 
-            _logger.LogInformation("IP received: {IP}", remoteIp);
-            _logger.LogInformation("Allowed IPs: {Allowed}", string.Join(",", allowedIps));
+            if (remoteIpAddress?.IsIPv4MappedToIPv6 == true)
+            {
+                remoteIpAddress = remoteIpAddress.MapToIPv4();
+            }
+
+            var remoteIp = remoteIpAddress?.ToString();
 
             if (!allowedIps.Any())
             {
-                _logger.LogWarning("Allowed IP list is empty.");
                 context.Response.StatusCode = StatusCodes.Status500InternalServerError;
                 await context.Response.WriteAsync("IP whitelist not configured.");
                 return;
@@ -46,15 +44,13 @@ namespace Infrastructure.Security
 
             if (string.IsNullOrWhiteSpace(remoteIp) || !allowedIps.Contains(remoteIp))
             {
-                _logger.LogWarning("IP not allowed: {IP}", remoteIp);
                 context.Response.StatusCode = StatusCodes.Status403Forbidden;
                 await context.Response.WriteAsync($"IP not allowed: {remoteIp}");
                 return;
             }
-Console.WriteLine("IP PASSED");
+
             await _next(context);
-
-
         }
+
     }
 }
